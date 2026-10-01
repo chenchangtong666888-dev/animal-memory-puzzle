@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8ed">
+  <title>小动物记忆大冒险</title>
+  <style>
+    :root{--ink:#26344b;--muted:#78859b;--purple:#7355df;--mint:#bfeedd;--pink:#ffe0de;--yellow:#ffda70;--paper:#fffefa}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:16px;background:radial-gradient(circle at 7% 8%,#ffe8bb 0,transparent 28%),radial-gradient(circle at 92% 92%,#c9f2e5 0,transparent 30%),#f3efff;color:var(--ink);font-family:ui-rounded,"Arial Rounded MT Bold","Microsoft YaHei",system-ui,sans-serif}
+    button{font:inherit;touch-action:manipulation}.game{width:min(700px,100%);padding:clamp(20px,5vw,38px);border-radius:30px;background:var(--paper);box-shadow:0 20px 55px #4332881b;border:3px solid #fff;position:relative;overflow:hidden}.game:after{content:"✦";position:absolute;right:27px;top:17px;color:#ffcf53;font-size:32px}
+    header{display:flex;align-items:center;gap:13px;margin-bottom:22px}.mascot{width:58px;height:58px;display:grid;place-items:center;border-radius:19px;background:#fff0c8;font-size:34px;box-shadow:inset 0 -4px #f4dc9e}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:900;color:var(--purple)}h1{font-size:clamp(23px,5vw,32px);margin:2px 0 0}.stats{display:flex;gap:8px;margin-left:auto}.stat{min-width:68px;border-radius:15px;background:#f1edff;padding:8px;text-align:center}.stat small{display:block;color:var(--muted);font-size:10px;font-weight:800}.stat b{font-size:17px;color:var(--purple)}
+    .intro{text-align:center;color:var(--muted);font-weight:800;font-size:15px;margin:0 0 17px}.progress{display:flex;align-items:center;gap:10px;margin-bottom:17px;font-size:13px;font-weight:900;color:var(--muted)}.track{flex:1;height:11px;background:#eeebf4;border-radius:20px;overflow:hidden}.fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,#a28aff,#6ecba5);transition:width .3s}
+    .deck{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;background:linear-gradient(140deg,#f4f0ff,#effaf5);padding:clamp(13px,4vw,23px);border-radius:24px}.card{border:0;min-height:clamp(78px,18vw,115px);border-radius:19px;background:#fff;box-shadow:0 5px 0 #e0dced;color:var(--ink);font-size:clamp(30px,9vw,49px);display:grid;place-items:center;transition:transform .16s,background .16s,box-shadow .16s;user-select:none}.card:hover{transform:translateY(-2px)}.card:active{transform:translateY(2px);box-shadow:0 2px 0 #e0dced}.card.back{background:linear-gradient(145deg,#8f79ee,#6d54d4);box-shadow:0 5px 0 #5944b6;color:#fff;font-size:34px}.card.back span{filter:drop-shadow(0 2px 0 #543fae)}.card.flipped{background:#fff5d9;box-shadow:0 5px 0 #edd897}.card.matched{background:#ddf8e9;box-shadow:0 5px 0 #a7dfbd;cursor:default;animation:pop .25s ease}.card:focus-visible,.action:focus-visible,.level:focus-visible{outline:4px solid #ffcf53;outline-offset:3px}@keyframes pop{50%{transform:scale(1.08)}}
+    .message{height:30px;margin:14px 0 0;text-align:center;color:#18966c;font-weight:900;font-size:15px}.message.soft{color:var(--muted)}.controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px}.levels{display:flex;gap:7px;flex-wrap:wrap}.level{border:2px solid #eeeaf4;background:white;color:var(--muted);font-size:13px;font-weight:900;border-radius:12px;padding:9px 11px;cursor:pointer}.level.active{border-color:#bfafff;background:#f3efff;color:var(--purple)}.action{border:0;background:var(--purple);color:white;padding:12px 17px;border-radius:15px;font-weight:900;box-shadow:0 5px 0 #563eb5;cursor:pointer}.action:active{transform:translateY(2px);box-shadow:0 2px 0 #563eb5}.success{display:none;text-align:center;padding:12px}.success.show{display:block}.success .emoji{font-size:68px}.success h2{font-size:29px;margin:3px 0}.success p{color:var(--muted);font-weight:800;line-height:1.65}.success .action{margin-top:5px}.hidden{display:none!important}.hint{text-align:center;color:#98a2b2;font-size:12px;margin:15px 0 0}
+    @media(max-width:430px){body{padding:10px}.game{border-radius:24px;padding:19px 16px}.mascot{width:49px;height:49px;font-size:28px}.stats{gap:5px}.stat{min-width:57px;padding:7px}.deck{gap:9px;padding:12px;border-radius:20px}.card{border-radius:15px;min-height:clamp(75px,19vw,98px)}.controls{align-items:flex-end}.level{padding:8px 9px}.action{padding:11px 13px}}
+  </style>
+</head>
+<body>
+  <main class="game" aria-label="小动物记忆配对游戏">
+    <header><div class="mascot" aria-hidden="true">🐻</div><div><div class="eyebrow">ANIMAL MEMORY</div><h1>小动物记忆大冒险</h1></div><div class="stats"><div class="stat"><small>翻牌次数</small><b id="moves">0</b></div><div class="stat"><small>找到配对</small><b id="pairs">0 / 3</b></div></div></header>
+    <section id="playArea">
+      <p class="intro">翻开两张卡片，找出相同的小动物！</p>
+      <div class="progress"><span>配对进度</span><div class="track"><div class="fill" id="progress"></div></div></div>
+      <div class="deck" id="deck" aria-label="动物卡片"></div>
+      <p class="message soft" id="message" aria-live="polite">准备好了吗？点一张卡片看看！</p>
+      <div class="controls"><div class="levels" aria-label="游戏难度"><button class="level active" data-pairs="3">🌱 简单 3 对</button><button class="level" data-pairs="4">⭐ 挑战 4 对</button></div><button class="action" id="restart">重新开始 ↻</button></div>
+      <p class="hint">记住小动物的位置，慢慢来就能找到它们！</p>
+    </section>
+    <section class="success" id="success" aria-live="polite"></section>
+  </main>
+  <script>
+    (()=>{
+      const animals=[['🐱','小猫'],['🐶','小狗'],['🐰','兔子'],['🐼','熊猫'],['🦊','狐狸'],['🐸','青蛙'],['🐵','猴子'],['🐻','小熊']];
+      const $=id=>document.getElementById(id);let pairCount=3,moves=0,matched=0,flipped=[],busy=false;
+      function shuffle(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}return list;}
+      function start(){moves=0;matched=0;flipped=[];busy=false;$('moves').textContent='0';$('pairs').textContent=`0 / ${pairCount}`;$('progress').style.width='0%';$('message').textContent='准备好了吗？点一张卡片看看！';$('message').className='message soft';$('success').classList.remove('show');$('playArea').classList.remove('hidden');$('deck').innerHTML='';
+        const chosen=shuffle([...animals]).slice(0,pairCount);const cards=shuffle([...chosen,...chosen].map((animal,index)=>({animal,key:`${animal[1]}-${index}-${Math.random()}`})));
+        cards.forEach(({animal,key})=>{const button=document.createElement('button');button.className='card back';button.type='button';button.dataset.animal=animal[1];button.setAttribute('aria-label','盖住的小动物卡片');button.setAttribute('aria-pressed','false');button.innerHTML='<span aria-hidden="true">?</span>';button.addEventListener('click',()=>turn(button,animal,key));$('deck').append(button);});
+      }
+      function turn(button,animal,key){if(busy||button.classList.contains('flipped')||button.classList.contains('matched'))return;button.classList.remove('back');button.classList.add('flipped');button.setAttribute('aria-pressed','true');button.setAttribute('aria-label',animal[1]);button.innerHTML=`<span aria-hidden="true">${animal[0]}</span>`;flipped.push({button,animal,key});if(flipped.length<2){$('message').textContent='再翻一张，看看是不是一对！';$('message').className='message soft';return;}moves++;$('moves').textContent=moves;
+        if(flipped[0].animal[1]===flipped[1].animal[1]){flipped.forEach(x=>{x.button.classList.add('matched');x.button.setAttribute('aria-label',`${x.animal[1]}，已配对`);});matched++;$('pairs').textContent=`${matched} / ${pairCount}`;$('progress').style.width=`${matched/pairCount*100}%`;$('message').textContent=['太棒啦，找到一对！','记性真好！配对成功！','小动物找到朋友啦！'][Math.floor(Math.random()*3)];$('message').className='message';flipped=[];if(matched===pairCount)setTimeout(finish,600);
+        }else{$('message').textContent='这两只不一样，记住它们的位置哦！';$('message').className='message soft';busy=true;const pair=[...flipped];flipped=[];setTimeout(()=>{pair.forEach(x=>{x.button.classList.remove('flipped');x.button.classList.add('back');x.button.setAttribute('aria-pressed','false');x.button.setAttribute('aria-label','盖住的小动物卡片');x.button.innerHTML='<span aria-hidden="true">?</span>';});busy=false;},900);}
+      }
+      function finish(){$('playArea').classList.add('hidden');$('success').classList.add('show');$('success').innerHTML=`<div class="emoji">🎉</div><h2>全部找到啦！</h2><p>你用 <b>${moves}</b> 次翻牌，找到了 <b>${pairCount}</b> 对小动物。<br>你真是记忆小高手！</p><button class="action" id="playAgain">再玩一轮 ↻</button>`;$('playAgain').addEventListener('click',start);}
+      $('restart').addEventListener('click',start);document.querySelectorAll('.level').forEach(button=>button.addEventListener('click',()=>{pairCount=Number(button.dataset.pairs);document.querySelectorAll('.level').forEach(x=>x.classList.toggle('active',x===button));$('pairs').textContent=`0 / ${pairCount}`;start();}));start();
+    })();
+  </script>
+</body>
+</html>
